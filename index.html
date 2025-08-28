@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>이랭 - 계산기</title>
+  <title>계산기</title>
   <meta name="viewport" content="width=400, initial-scale=1">
   <!-- 구글 애드센스 광고 스크립트 (HEAD에 한 번만!) -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4634078773523032"
@@ -20,11 +20,16 @@
     .ac { background: #f87171; color: #fff; }
     .ac:hover { background: #dc2626; }
     .ads { margin: 30px auto 20px auto; text-align: center; max-width: 320px; }
+    .history { background: #f3f4f6; padding: 10px; border-radius: 6px; margin-top: 20px; min-height: 48px;}
+    .history-title { color: #666; font-size: 0.95em; margin-bottom: 7px; }
+    .history-list { list-style: none; padding: 0; margin: 0; font-size: 1.08em; color: #333;}
+    .history-list li { padding: 2px 0; border-bottom: 1px dotted #d1d5db; }
     @media (max-width: 400px) {
       .container { padding: 10px; }
       .display { font-size: 1.2em; }
       button { font-size: 1em; padding: 10px 0; }
       .ads { max-width: 98vw; }
+      .history { font-size: 0.98em;}
     }
   </style>
 </head>
@@ -42,7 +47,7 @@
     </script>
   </div>
   <div class="container">
-    <h1>이랭 계산기</h1>
+    <h1>계산기</h1>
     <input type="text" id="display" class="display" disabled />
     <div class="buttons">
       <button onclick="press('7')">7</button>
@@ -63,6 +68,11 @@
       <button onclick="press('+')">+</button>
       <button class="equals" onclick="calculate()">=</button>
     </div>
+    <!-- 계산 기록 -->
+    <div class="history">
+      <div class="history-title">과거 계산 기록</div>
+      <ul class="history-list" id="historyList"></ul>
+    </div>
   </div>
   <!-- 광고: 계산기 하단 -->
   <div class="ads">
@@ -79,6 +89,8 @@
   <script>
     let current = '';
     const display = document.getElementById('display');
+    let history = [];
+
     function press(val) {
       if (current.length > 20) return; // 입력 제한
       current += val;
@@ -94,12 +106,22 @@
         if (typeof result === 'number' && !isNaN(result)) {
           result = Math.round(result * 1000000000000) / 1000000000000;
         }
+        // 기록 추가: "수식 = 결과" 형식
+        if (current !== '') {
+          history.unshift(current + ' = ' + result);
+          if (history.length > 10) history.pop(); // 최근 10개만 보관
+          renderHistory();
+        }
         display.value = result;
         current = result.toString();
       } catch {
         display.value = 'Error';
         current = '';
       }
+    }
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      list.innerHTML = history.map(item => `<li>${item}</li>`).join('');
     }
     // 키보드 입력 지원
     document.addEventListener('keydown', function(e) {
