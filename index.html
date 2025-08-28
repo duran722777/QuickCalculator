@@ -8,22 +8,103 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4634078773523032"
      crossorigin="anonymous"></script>
   <style>
-    body { background: #fafbfc; font-family: Arial, sans-serif; }
-    .container { max-width: 320px; margin: 60px auto 16px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 24px; }
-    h1 { text-align: center; color: #222; margin-bottom: 16px; font-size: 1.6em; }
-    .display { width: 100%; height: 48px; font-size: 1.5em; text-align: right; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 14px; padding: 0 9px; background: #f7f7f7; }
-    .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
-    button { padding: 14px 0; font-size: 1.2em; border: none; background: #e5e7eb; border-radius: 5px; cursor: pointer; transition: background 0.16s; }
-    button:hover, button:focus { background: #cfd2d6; }
-    .equals { background: #2563eb; color: #fff; grid-column: span 4; font-weight: bold; }
-    .equals:hover { background: #1742a7; }
-    .ac { background: #f87171; color: #fff; }
-    .ac:hover { background: #dc2626; }
-    .ads { margin: 30px auto 20px auto; text-align: center; max-width: 320px; }
-    .history { background: #f3f4f6; padding: 10px; border-radius: 6px; margin-top: 20px; min-height: 48px;}
-    .history-title { color: #666; font-size: 0.95em; margin-bottom: 7px; }
-    .history-list { list-style: none; padding: 0; margin: 0; font-size: 1.08em; color: #333;}
-    .history-list li { padding: 2px 0; border-bottom: 1px dotted #d1d5db; }
+    body {
+      background: #fdf6fb;
+      font-family: 'Segoe UI', 'Apple SD Gothic Neo', Arial, sans-serif;
+    }
+    .container {
+      max-width: 330px;
+      margin: 60px auto 16px auto;
+      background: #fff7f0;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px rgba(211, 183, 255, 0.15);
+      padding: 24px;
+    }
+    h1 {
+      text-align: center;
+      color: #8c8cff;
+      margin-bottom: 16px;
+      font-size: 1.6em;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .display {
+      width: 100%;
+      height: 48px;
+      font-size: 1.5em;
+      text-align: right;
+      border: 1px solid #e6cfff;
+      border-radius: 9px;
+      margin-bottom: 14px;
+      padding: 0 12px;
+      background: #f3f3fd;
+      color: #6f6f8f;
+      box-sizing: border-box;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+    }
+    button {
+      padding: 14px 0;
+      font-size: 1.18em;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: background 0.18s;
+      font-weight: 500;
+      box-shadow: 0 0.5px 2px rgba(100,100,180,0.06);
+    }
+    button:nth-child(4n+1) { background: #ffe0e6; color: #c4636e;}
+    button:nth-child(4n+2) { background: #eaf7ff; color: #5282a7;}
+    button:nth-child(4n+3) { background: #f6ffe5; color: #75a15e;}
+    button:nth-child(4n)   { background: #fff6e3; color: #d5a34e;}
+    button:hover, button:focus { filter: brightness(0.95); }
+    .equals {
+      background: #bdf6ff;
+      color: #00a5b0;
+      grid-column: span 4;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    .equals:hover { background: #90eaf5; }
+    .ac {
+      background: #fbe6ff;
+      color: #c463c4;
+    }
+    .ac:hover { background: #f2c7fa; }
+    .ads {
+      margin: 30px auto 20px auto;
+      text-align: center;
+      max-width: 320px;
+    }
+    .history {
+      background: #f2fefd;
+      padding: 10px;
+      border-radius: 9px;
+      margin-top: 22px;
+      min-height: 48px;
+      box-shadow: 0 0.5px 2px rgba(133, 199, 209, 0.07);
+    }
+    .history-title {
+      color: #89a9a8;
+      font-size: 0.98em;
+      margin-bottom: 7px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+    .history-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 1.08em;
+      color: #5e6f6f;
+    }
+    .history-list li {
+      padding: 3px 0;
+      border-bottom: 1px dotted #e1e9e8;
+    }
     @media (max-width: 400px) {
       .container { padding: 10px; }
       .display { font-size: 1.2em; }
@@ -123,15 +204,30 @@
       const list = document.getElementById('historyList');
       list.innerHTML = history.map(item => `<li>${item}</li>`).join('');
     }
-    // 키보드 입력 지원
+    // 키보드 입력 지원 (숫자 키패드 포함 전면 지원)
     document.addEventListener('keydown', function(e) {
-      const key = e.key;
-      if ('0123456789'.includes(key)) press(key);
-      else if (key === '+' || key === '-' || key === '*' || key === '/') press(key);
-      else if (key === 'Enter' || key === '=') calculate();
-      else if (key === 'Escape') allClear();
-      else if (key === '.') press('.');
-      else if (key.toLowerCase() === 'c') allClear();
+      // 일반 숫자키(1~0), 키패드(1~0), 연산자 키패드 모두 지원
+      if (e.key.match(/^[0-9]$/) || e.code.match(/^Numpad[0-9]$/)) {
+        press(e.key.length === 1 ? e.key : e.code.replace('Numpad',''));
+      }
+      else if (
+        ['+', '-', '*', '/', '.'].includes(e.key) ||
+        ['NumpadAdd', 'NumpadSubtract', 'NumpadMultiply', 'NumpadDivide', 'NumpadDecimal'].includes(e.code)
+      ) {
+        let map = {
+          NumpadAdd: '+',
+          NumpadSubtract: '-',
+          NumpadMultiply: '*',
+          NumpadDivide: '/',
+          NumpadDecimal: '.'
+        };
+        press(map[e.code] || e.key);
+      }
+      else if (e.key === 'Enter' || e.key === '=' || e.code === 'NumpadEnter') {
+        calculate();
+      }
+      else if (e.key === 'Escape') allClear();
+      else if (e.key.toLowerCase() === 'c') allClear();
     });
   </script>
 </body>
